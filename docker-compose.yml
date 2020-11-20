@@ -1,0 +1,47 @@
+version: "3.7"
+services:
+  nginx-proxy:
+    container_name: u-proxy
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./proxy/vhost.d:/etc/nginx/vhost.d
+      - ./certs:/etc/nginx/certs:ro
+      - html:/usr/share/nginx/html
+      - dhparam:/etc/nginx/dhparam
+    networks:
+      - u-network
+      - proxy-net
+    labels:
+      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy"
+  letsencrypt:
+    container_name: nginx-proxy-letsencrypt
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./proxy/vhost.d:/etc/nginx/vhost.d
+      - ./certs:/etc/nginx/certs:rw
+      - html:/usr/share/nginx/html
+      - dhparam:/etc/nginx/dhparam'
+    environment:
+      - DEFAULT_EMAIL=eacosta@lya-electronic.com
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    networks:
+      - u-network
+      - proxy-net
+    depends_on:
+      - nginx-proxy
+networks:
+  u-network:
+    external:
+      name: u-network
+  proxy-net:
+    external:
+      name: proxy-net
+volumes:
+  certs:
+  dhparam:
+  html:
