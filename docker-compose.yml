@@ -27,7 +27,7 @@ services:
       - html:/usr/share/nginx/html
       - dhparam:/etc/nginx/dhparam'
     environment:
-      - DEFAULT_EMAIL=oalvarez@lya-electronic.com
+      - DEFAULT_EMAIL=me@everacosta.com
     image: jrcs/letsencrypt-nginx-proxy-companion
     networks:
       - u-network
